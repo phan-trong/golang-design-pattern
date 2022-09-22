@@ -5,6 +5,10 @@ import (
 	"math"
 )
 
+type shape interface {
+	area() float32
+}
+
 type circle struct {
 	radius float32
 }
@@ -15,18 +19,19 @@ type square struct {
 
 type calculator struct{}
 
-func (c calculator) sumArea(shapes ...interface{}) float32 {
+func (c circle) area() float32 {
+	return math.Pi * c.radius * c.radius
+}
+
+func (s square) area() float32 {
+	return s.length * s.length
+}
+
+func (c calculator) sumArea(shapes ...shape) float32 {
 	var sum float32
 
 	for _, shape := range shapes {
-		switch shape.(type) {
-		case circle:
-			r := shape.(circle).radius
-			sum += math.Pi * r * r
-		case square:
-			l := shape.(square).length
-			sum += l * l
-		}
+		sum += shape.area()
 	}
 
 	return sum
